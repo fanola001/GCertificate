@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <title>Generador de Certificados</title>
+    <style>
+        @font-face {
+                font-family: 'texgyretermes';
+                src: url('texgyretermes-bold.otf') format('opentype');
+        }
+
+    	@font-face {
+                font-family: 'Alice';
+           	    src: url('Alice-Regular.ttf') format('truetype'); 
+       	 }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url(https://yt3.googleusercontent.com/oocIKE4jmo-OUnAiopAX3Op5mFuFB6g72betcUdoTE5q9cSliHTAEIfyxHAQ_XEdDeFd2guj=s900-c-k-c0x00ffffff-no-rj);
+            background-size: cover;
+            margin: 100px;
+            margin-top: 70px;
+            padding: 0;
+            align-items: center;
+            justify-content: center;
+        }
+
+
+        h1 {
+            text-align: center;
+        }
+
+        form {
+            background-color: #fff;
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 6px solid #007bff; /* Color del borde */
+            border-radius: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 22);
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+        }
+
+        input {
+            width: 95%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 3px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 3px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background-color .3s ease;
+        }
+
+        button:hover {
+            background-color: aqua;
+            border: none;
+        }
+
+        #certificateDisplay {
+            background-color: #fff;
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            display: none;
+        }
+
+        /* Agrega un nuevo estilo para los botones */
+        .boton {
+            display: inline-block;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+
+
+        /* Estilo para centrar solo los botones de cargar y refrescar */
+        .centrar-botones {
+            text-align: center;
+        }
+
+        #refrescar {
+            background-color: #28a745; /* Color verde */
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Generador de Certificados</h1>
+    <form id="certificateForm">
+        <label for="nombrePersona">Nombre de la persona:</label>
+        <input type="text" id="nombrePersona" name="nombrePersona" required><br><br>
+
+        <label for="nombreCurso">Nombre del curso:</label>
+        <select id="nombreCurso" name="nombreCurso" required>
+            <option value="" selected disabled>Seleccione un curso...</option>
+            <option value="Asistente Administrativo">Asistente Administrativo</option>
+            <option value="Asesor de Creditos">Asesor de Creditos</option>
+            <option value="Cajero Bancario">Cajero Bancario</option>
+            <option value="Gestión Pública">Gestión Pública</option>
+            <option value="Marketing Empresarial">Marketing Empresarial</option>
+            <option value="Servicio al cliente">Servicio al cliente</option>
+            <option value="Técnicas de Ventas">Técnicas de Ventas</option>
+            <option value="Contabilidad I">Contabilidad I</option>
+            <option value="Contabilidad II">Contabilidad II</option>
+            <option value="Orientación Vocacional">Orientación Vocacional</option>
+            <option value="OSCE">OSCE</option>
+            <option value="SEACE">SEACE</option>
+            <option value="SIAF">SIAF</option>
+            <option value="SIGA">SIGA</option>
+        </select><br><br>
+
+    	<label for="fechaInicio">Fecha de inicio del curso:</label>
+        <input type="date" id="fechaInicio" name="fechaInicio" required><br><br>
+
+        <label for="fechaFinalizacion">Fecha de finalización del curso:</label>
+        <input type="date" id="fechaFinalizacion" name="fechaFinalizacion" required><br><br>
+
+        <label for="duracionCurso">Duración del curso:</label>
+        <select id="duracionCurso" name="duracionCurso" required>
+            <option value="200">200 horas</option>
+            <option value="250">250 horas</option>
+            <option value="300">300 horas</option>
+        </select><br><br>
+
+        <label for="numeroRegistro">Número de Registro:</label>
+        <input type="text" id="numeroRegistro" name="numeroRegistro" required><br><br>
+
+        <label for="link">Enlace o Texto:</label>
+        <input type="text" id="link" placeholder="Escribe el texto o URL" />
+
+        <div class="centrar-botones">
+        <button type="button" id="generarCertificado" class="boton" style="margin-right: 20px;">Cargar Datos</button>
+        <button type="button" id="refrescar" class="boton" style="margin-left: 20px;">Refrescar</button>
+        </div>
+        <button type="button" id="descargarCertificado" style="display: none; margin: 0 auto; margin-top: 15px; margin-bottom: 10px;">Descargar Certificado</button>
+        
+
+    </form>
+
+    <div id="contenedorQR" class="contenedorQR" style="display: none;"></div>
+
+    <div id="certificateDisplay">
+        <img src="https://i.ibb.co/XpTfCRT/1.png" id="plantillaCertificado1" style="display: none;" crossorigin="anonymous">
+        <img src="https://i.ibb.co/pQqW55p/2.png" id="plantillaCertificado2" style="display: none;" crossorigin="anonymous">
+    </div>
+    
+    <script>
+    // Función para justificar el texto en líneas
+    function getJustifiedLines(context, text, maxWidth, font, lineHeight) {
+        var words = text.split(' ');
+        var lines = [];
+        var currentLine = words[0];
+
+        for (var i = 1; i < words.length; i++) {
+            var word = words[i];
+            var testLine = currentLine + ' ' + word;
+            var testWidth = context.measureText(testLine).width;
+
+            if (testWidth <= maxWidth) {
+                currentLine = testLine;
+            } else {
+                lines.push(currentLine);
+                currentLine = word;
+            }
+        }
+
+        lines.push(currentLine);
+        return lines;
+    }
+
+    document.getElementById('nombreCurso').addEventListener('change', function () {
+        var numeroRegistroInput = document.getElementById('numeroRegistro');
+        var nombreCursoSelect = this.value;
+
+        // Aquí defines el texto correspondiente para cada opción del curso
+        var textoEspecifico = '';
+
+        switch (nombreCursoSelect) {
+            case 'Asistente Administrativo':
+                textoEspecifico = '00003-01-DEMA(ASISTENTE ADMINISTRATIVO)';
+                break;
+            case 'Asesor de Creditos':
+                textoEspecifico = '00002-01-DEMA(ASESOR DE CREDITOS)';
+                break;
+            case 'Cajero Bancario':
+                textoEspecifico = '00004-01-DEMA(CAJERO BANCARIO)';
+                break;
+            case 'Gestión Pública':
+                textoEspecifico = '00005-01-DEMA(GESTIÓN PÚBLICA)';
+                break;
+            case 'Marketing Empresarial':
+                textoEspecifico = '00006-01-DEMA(MARKETING EMPRESARIAL)';
+                break;
+            case 'Servicio al cliente':
+                textoEspecifico = '00008-01-DEMA(SERVICIO AL CLIENTE)';
+                break;
+            case 'Técnicas de Ventas':
+                textoEspecifico = '00007-01-DEMA(TÉCNICAS DE VENTAS)';
+                break;
+            case 'Contabilidad I':
+                textoEspecifico = '00009-01-DEMA(CONTABILIDAD I)';
+                break;
+            case 'Contabilidad II':
+                textoEspecifico = '00010-01-DEMA(CONTABILIDAD II)';
+                break;
+            case 'Orientación Vocacional':
+                textoEspecifico = '00001-01-DEMA(ORIENTACIÓN VOCAIONAL)';
+                break;
+            case 'OSCE':
+                textoEspecifico = '00011-01-DEMA(OSCE)';
+                break;
+            case 'SEACE':
+                textoEspecifico = '00012-01-DEMA(SEACE)';
+                break;
+            case 'SIAF':
+                textoEspecifico = '00013-01-DEMA(SIAF)';
+                break;
+            case 'SIGA':
+                textoEspecifico = '00014-01-DEMA(SIGA)';
+                break;
+
+            default:
+                textoEspecifico = '';
+                break;
+        }
+
+        // Asigna el texto específico al campo de número de registro
+        numeroRegistroInput.value = textoEspecifico;
+
+    });
+
+    // Crear una instancia de QRCode
+    const contenedorQR = document.getElementById('contenedorQR');
+    const QR = new QRCode(contenedorQR);
+
+    // Variable para realizar un seguimiento del primer clic
+    var primerClic = false;
+
+    // JavaScript para manejar la recarga de la página
+        document.getElementById("refrescar").addEventListener("click", function () {
+            // Recargar la página
+            location.reload();
+        });
+
+    // JavaScript para manejar la generación del certificado
+    document.getElementById("generarCertificado").addEventListener("click", function () {
+        // Capturar los valores ingresados por el usuario
+        var nombrePersona = document.getElementById("nombrePersona").value.toUpperCase();
+        var nombreCurso = document.getElementById("nombreCurso").options[document.getElementById("nombreCurso").selectedIndex].value.toUpperCase();
+
+        // Obtener valores de los campos de fecha
+        var fechaInicioInput = document.getElementById("fechaInicio").value.split("-");
+        var fechaFinalizacionInput = document.getElementById("fechaFinalizacion").value.split("-");
+
+        // Ajustar los valores del mes (restar 1 ya que los meses en JavaScript son de 0 a 11)
+        var fechaInicio = new Date(fechaInicioInput[0], fechaInicioInput[1] - 1, fechaInicioInput[2]);
+        var fechaFinalizacion = new Date(fechaFinalizacionInput[0], fechaFinalizacionInput[1] - 1, fechaFinalizacionInput[2]);
+
+        var duracionCurso = document.getElementById("duracionCurso").options[document.getElementById("duracionCurso").selectedIndex].value.toUpperCase();
+        var numeroRegistro = document.getElementById("numeroRegistro").value.toUpperCase();
+
+        // Cambiar el texto del botón después del primer clic
+        if (!primerClic) {
+            this.innerText = "Generar Certificado";
+            primerClic = true;
+        }
+
+        // Boton de descarga oculto
+        document.getElementById("descargarCertificado").style.display = "none";
+
+        // Obtener el enlace del formulario
+        var enlaceQR = document.getElementById("link").value;
+
+        // Generar el código QR en el contenedor
+        QR.makeCode(enlaceQR);
+
+        // Obtener la imagen del código QR del contenedor
+        var codigoQR = new Image();
+        codigoQR.src = contenedorQR.getElementsByTagName("img")[0].src;
+
+        codigoQR.onload = function () {  //------------------------------->>>
+
+        // Obtener la plantilla de certificado
+        var plantillaCertificado1 = document.getElementById("plantillaCertificado1");
+        var plantillaCertificado2 = document.getElementById("plantillaCertificado2");
+
+        // Crear un lienzo para trabajar con las plantillas
+        var canvas = document.createElement("canvas");
+        var context = canvas.getContext("2d");
+        var canvas2 = document.createElement("canvas");
+        var context2 = canvas2.getContext("2d");
+
+        // Establecer las dimensiones de los lienzos
+        canvas.width = plantillaCertificado1.width;
+        canvas.height = plantillaCertificado1.height;
+        canvas2.width = plantillaCertificado2.width;
+        canvas2.height = plantillaCertificado2.height;
+
+        // Dibujar la plantilla en el lienzo
+        context.drawImage(plantillaCertificado1, 0, 0);
+        context2.drawImage(plantillaCertificado2, 0, 0);
+
+        // Modificar las coordenadas y dimensiones para el primer lienzo
+        var xQR1 = 1746; // Ajusta la coordenada x según tus necesidades
+        var yQR1 = 1156; // Ajusta la coordenada y según tus necesidades
+        var widthQR1 = 170; // Ajusta el ancho según tus necesidades
+        var heightQR1 = 170; // Ajusta el alto según tus necesidades
+        context.drawImage(codigoQR, xQR1, yQR1, widthQR1, heightQR1);
+
+        // Modificar las coordenadas y dimensiones para el segundo lienzo
+        var xQR2 = 1648; // Ajusta la coordenada x según tus necesidades
+        var yQR2 = 1088; // Ajusta la coordenada y según tus necesidades
+        var widthQR2 = 170; // Ajusta el ancho según tus necesidades
+        var heightQR2 = 170; // Ajusta el alto según tus necesidades
+        context2.drawImage(codigoQR, xQR2, yQR2, widthQR2, heightQR2);
+
+        // Definir el estilo de texto del "nombre"
+        context.font = "bold 70px texgyretermes";
+        context.fillStyle = "#000000"; // Color del texto
+
+        // Calcular el ancho del lienzo
+        var canvasWidth = canvas.width;
+
+        // Calcular el ancho del texto y ajustar las coordenadas x
+        var textWidth = context.measureText(nombrePersona).width;
+        var x1 = (canvasWidth - textWidth) / 2;
+        context.fillText(nombrePersona, x1, 438);
+
+        // Definir el estilo de texto del curso
+        context.font = "bold 68px texgyretermes";
+        context.fillStyle = "#000000"; // Color del texto
+
+        textWidth = context.measureText(nombreCurso).width;
+        var x2 = (canvasWidth - textWidth) / 2;
+        context.fillText(nombreCurso, x2, 706);
+
+        // Cambio de estilo de fuente para el texto
+        context.font = "36px Alice";
+        context.fillStyle = "#000000"; // Color del texto
+
+        // Formatear las fechas en el formato deseado
+        var options = { day: 'numeric', month: 'long'};
+        var fechaInicioFormateada = fechaInicio.toLocaleDateString('es-ES', options);
+        var options = { day: 'numeric', month: 'long', year: 'numeric' };
+        var fechaFinalizacionFormateada = fechaFinalizacion.toLocaleDateString('es-ES', options).replace(/de(?!.*de)/, 'del');
+
+        // Sustituir los marcadores de posición con los valores ingresados
+        var textoReemplazo1 = `En calidad de participante durante ${duracionCurso} horas académicas, en el curso de:`;
+
+        var textoReemplazo2 = `Realizado del ${fechaInicioFormateada} al ${fechaFinalizacionFormateada}. Organizado por el GRUPO CHAAL Contratistas & Consultores S.R.L.`;
+
+        // Ancho máximo permitido para el texto
+        var maxWidth = canvasWidth - 1300; // Ajusta este valor según tus necesidades
+
+        var lines = getJustifiedLines(context, textoReemplazo1, maxWidth, context.font, 30);
+        
+        //Dibuja el texto justificado
+        var y = 533; // Coordenada y donde comienza el texto
+        for (var i = 0; i < lines.length; i++) {
+            var textWidth = context.measureText(lines[i]).width;
+            var x = (canvasWidth - textWidth) / 2;
+            context.fillText(lines[i], x, y);
+            y += 45; // Espaciado entre líneas
+        }
+
+        // Ancho máximo permitido para el texto
+        var maxWidth = canvasWidth - 800; // Ajusta este valor según tus necesidades
+
+        var lines = getJustifiedLines(context, textoReemplazo2, maxWidth, context.font, 30);
+        
+        //Dibuja el texto justificado
+        var y = 803; // Coordenada y donde comienza el texto
+        for (var i = 0; i < lines.length; i++) {
+            var textWidth = context.measureText(lines[i]).width;
+            var x = (canvasWidth - textWidth) / 2;
+            context.fillText(lines[i], x, y);
+            y += 45; // Espaciado entre líneas
+        }
+
+        // Cambio de estilo de fuente para el código de registro
+        context.font = "bold italic 25px Alice";
+        context.fillStyle = "#000000"; 
+        context2.font = "bold italic 25px Alice";
+        context2.fillStyle = "#000000";
+
+        // Coordenadas personalizadas para el número de registro hoja 1
+        var xNumeroRegistro = 225; // Ajusta la coordenada x según tus necesidades
+        var yNumeroRegistro = 1332; // Ajusta la coordenada y según tus necesidades
+        context.fillText(numeroRegistro, xNumeroRegistro, yNumeroRegistro);
+
+        // Coordenadas personalizadas para el número de registro hoja 2
+        var xNumeroRegistro2 = 1008; // Ajusta la coordenada x según tus necesidades
+        var yNumeroRegistro2 = 465; // Ajusta la coordenada y según tus necesidades
+        context2.fillText(numeroRegistro, xNumeroRegistro2, yNumeroRegistro2);
+
+        // Modificar el evento de descarga para incluir un archivo ZIP con ambas imágenes
+        document.getElementById("descargarCertificado").addEventListener("click", function () {
+            // Crear una instancia de JSZip
+            var zip = new JSZip();
+
+            // Convertir la primera imagen a datos binarios
+            var imageData1 = canvas.toDataURL("image/png").replace("data:image/png;base64,", "");
+            var data1 = atob(imageData1);
+            var buffer1 = new Uint8Array(data1.length);
+            for (var i = 0; i < data1.length; i++) {
+                buffer1[i] = data1.charCodeAt(i);
+            }
+
+            // Convertir la segunda imagen a datos binarios
+            var imageData2 = canvas2.toDataURL("image/png").replace("data:image/png;base64,", "");
+            var data2 = atob(imageData2);
+            var buffer2 = new Uint8Array(data2.length);
+            for (var j = 0; j < data2.length; j++) {
+                buffer2[j] = data2.charCodeAt(j);
+            }
+
+            // Agregar la primera imagen al archivo ZIP
+            zip.file("certificado_personalizado1.png", buffer1, { binary: true });
+
+            // Agregar la segunda imagen al archivo ZIP
+            zip.file("certificado_personalizado2.png", buffer2, { binary: true });
+
+            // Generar el archivo ZIP
+            zip.generateAsync({ type: "blob" })
+                .then(function (blob) {
+                    // Crear un enlace de descarga para el archivo ZIP
+                    var link = document.createElement("a");
+                    link.href = URL.createObjectURL(blob);
+                    link.download = "certificados_personalizados.zip"; // Nombre del archivo ZIP
+                    link.click();
+                });
+        });
+
+        // Mostrar el botón de descarga después de que el código QR haya cargado
+        document.getElementById("descargarCertificado").style.display = "block";
+
+        };  //------------------------------->>>
+
+
+        function descargarImagen(canvas, filename) {
+            var link = document.createElement("a");
+            link.href = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+            link.download = filename; // Nombre del archivo a descargar
+            link.click();
+        }
+
+    });
+    </script>
+</body>
+</html>
